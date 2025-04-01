@@ -1,4 +1,4 @@
-const config = require("config.json");
+const config = require("../config.json");
 const mysql = require("mysql2/promise");
 const { Sequelize } = require("sequelize");
 
@@ -50,23 +50,10 @@ async function initialize() {
   // init models and add them to the exported db object
   db.User = require("../users/user.model")(sequelize);
   db.RefreshToken = require("../users/refresh-token.model")(sequelize);
-  db.Competition = require("../competitions/competition.model")(sequelize);
-  db.Board = require("../boards/board.model")(sequelize);
-  db.Tile = require("../tiles/tile.model")(sequelize);
-  db.Song = require("../songs/song.model")(sequelize);
 
   // define relationships
   db.User.hasMany(db.RefreshToken, { onDelete: "CASCADE" });
   db.RefreshToken.belongsTo(db.User);
-
-  db.User.hasMany(db.Board, { onDelete: "CASCADE" });
-  db.Board.belongsTo(db.User);
-
-  db.Competition.hasMany(db.Board, { onDelete: "CASCADE" });
-  db.Board.belongsTo(db.Competition);
-
-  db.Board.hasMany(db.Tile, { onDelete: "CASCADE" });
-  db.Tile.belongsTo(db.Board);
 
   // sync all models with database
   await sequelize.sync();
@@ -88,10 +75,13 @@ async function initSequelize(database, user, password, host, socketPath) {
   try {
     await sequelize.authenticate();
     console.log(
-      "Connection to the OTAB database has been established successfully."
+      "Connection to the Collections Platform database has been established successfully."
     );
   } catch (error) {
-    console.error("Unable to connect to the OTAB database:", error);
+    console.error(
+      "Unable to connect to the Collections Platform database:",
+      error
+    );
   }
   return sequelize;
 }

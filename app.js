@@ -27,7 +27,7 @@ https: app.use(
 app.use("/users", require("./users/users.controller"));
 
 // swagger docs route
-app.use("/api-docs", require("_helpers/swagger"));
+app.use("/api-docs", require("./_helpers/swagger"));
 
 // global error handler
 app.use(errorHandler);
