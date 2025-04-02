@@ -1,9 +1,9 @@
 ﻿const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
-const validateRequest = require("../_middleware/validate-request");
-const authorize = require("../_middleware/authorize");
-const Role = require("../_helpers/role");
+const validateRequest = require("../middleware/validate-request");
+const authorize = require("../middleware/authorise");
+const Role = require("../helpers/role");
 const userService = require("./user.service");
 const rateLimit = require("express-rate-limit");
 

@@ -1,19 +1,15 @@
-const logger = require("winston"); // Example logging library
-
 module.exports = errorHandler;
 
 function errorHandler(err, req, res, next) {
-  logger.error(err); // Log error details
-
   switch (true) {
-    case typeof err === "string":
+    case typeof err === 'string':
       // custom application error
-      const is404 = err.toLowerCase().endsWith("not found");
+      const is404 = err.toLowerCase().endsWith('not found');
       const statusCode = is404 ? 404 : 400;
       return res.status(statusCode).json({ message: err });
-    case err.name === "UnauthorizedError":
+    case err.name === 'UnauthorisedError':
       // jwt authentication error
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: 'Unauthorised' });
     default:
       return res.status(500).json({ message: err.message });
   }
