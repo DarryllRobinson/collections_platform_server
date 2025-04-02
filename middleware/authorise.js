@@ -6,7 +6,7 @@ const db = require("../helpers/db.js");
 module.exports = authorise;
 
 function authorise(roles = []) {
-  //console.log('**************** authorise');
+  // console.log("**************** authorise");
   // roles param can be a single role string (e.g. Role.User or 'User')
   // or an array of roles (e.g. [Role.Admin, Role.User] or ['Admin', 'User'])
   if (typeof roles === "string") {
@@ -19,8 +19,9 @@ function authorise(roles = []) {
 
     // authorize based on user role
     async (req, res, next) => {
+      console.log("authorise user: ", req.user);
       const user = await db.User.findByPk(req.user.id);
-      //console.log('!!!!!!!! authorise user', JSON.stringify(user));
+      console.log("!!!!!!!! authorise user", JSON.stringify(user));
 
       if (
         !user ||

@@ -52,6 +52,7 @@ app.use(
 app.use(loggerHandler);
 
 // api routes
+app.use("/api/clients", require("./clients/clients.controller"));
 app.use("/api/accounts", require("./accounts/accounts.controller"));
 app.use("/api/cases", require("./cases/cases.controller"));
 app.use("/api/collections", require("./collections/collections.controller"));
@@ -99,7 +100,7 @@ switch (process.env.REACT_APP_STAGE) {
     port = 8083;
     break;
   default:
-    port = 0;
+    port = 4001;
     break;
 }
 

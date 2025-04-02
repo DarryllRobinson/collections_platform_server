@@ -101,8 +101,8 @@ async function initialize() {
 
       // sync all models with database
       initModels(db, sequelize);
-      await sequelize.sync();
-      console.log("completed sync");
+      // await sequelize.sync();
+      // console.log("completed sync");
       // generateMockData = require("../mock/mockData");
     }
   );
