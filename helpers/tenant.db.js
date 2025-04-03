@@ -1,21 +1,21 @@
-const dbConfig = require('./tenant.config.js');
-const mysql = require('mysql2');
-const { Sequelize } = require('sequelize');
+const dbConfig = require("./tenant.config.js");
+const mysql = require("mysql2");
+const { Sequelize } = require("sequelize");
 
 // Determine which config to use for which environment
 let config;
 
 switch (process.env.REACT_APP_STAGE) {
-  case 'development':
+  case "development":
     config = dbConfig.devConfig;
     break;
-  case 'sit':
+  case "sit":
     config = dbConfig.sitConfig;
     break;
-  case 'uat':
+  case "uat":
     config = dbConfig.uatConfig;
     break;
-  case 'production':
+  case "production":
     config = dbConfig.prodConfig;
     break;
   default:
@@ -27,7 +27,7 @@ module.exports = { connect };
 
 async function connect(user, password) {
   try {
-    //console.log('****************** connecting to tenant db: ', user, password);
+    console.log("****************** connecting to tenant db: ", user, password);
     const { host, port, database, socketPath } = config;
     const pool = await mysql.createPool({
       connectionLimit: 100,
@@ -40,27 +40,35 @@ async function connect(user, password) {
 
     pool.getConnection((err, connection) => {
       if (err) throw err;
-      //console.log('!!!!!!!!!!!!!!!!! tenant db connected as id ', connection.threadId);
+      console.log(
+        "!!!!!!!!!!!!!!!!! tenant db connected as id ",
+        connection.threadId
+      );
     });
 
     // connect to db
-    //console.log('!!!!!!!!!!!!!!!!! connect to tenant db: ', database, user, password);
+    console.log(
+      "!!!!!!!!!!!!!!!!! connect to tenant db: ",
+      database,
+      user,
+      password
+    );
     const sequelize = new Sequelize(
       database,
       user,
       password,
       {
-        dialect: 'mysql',
+        dialect: "mysql",
         dialectOptions: { decimalNumbers: true, socketPath },
       },
       function (err, results) {
         if (err) throw err;
-        console.log('result', results);
+        console.log("result", results);
       }
     );
     return sequelize;
   } catch (e) {
-    console.log('!@##@! Error connecting to database: ' + e.message);
+    console.log("!@##@! Error connecting to database: " + e.message);
     return;
   }
 }

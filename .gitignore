@@ -44,3 +44,6 @@ config.json
 
 # macOS system files
 .DS_Store
+
+# cron back-up files - turninng off during development
+crons/backups/

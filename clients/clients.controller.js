@@ -8,12 +8,12 @@ const clientService = require("./client.service");
 
 // routes
 // router.get("/", authorise(), getAll);
-router.post("/", authorise(), getAll);
+// router.post("/", authorise(), getAll);
+router.get("/", getAll);
 
 module.exports = router;
 
 function getAll(req, res, next) {
-  console.log("getAll clients", req.secret);
   clientService
     .getAll()
     .then((clients) => res.json(clients))

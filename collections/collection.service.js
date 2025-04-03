@@ -1,5 +1,6 @@
-const tenantdb = require('../helpers/tenant.db');
-const { QueryTypes } = require('sequelize');
+const tenantdb = require("../helpers/tenant.db");
+const tenantConfig = require("../helpers/tenant.config");
+const { QueryTypes } = require("sequelize");
 
 module.exports = {
   getAll,
@@ -25,19 +26,34 @@ async function connectNDB(user, password, dbs) {
   return dbModels;
 }
 
-async function getAll(user, password) {
-  const sequelize = await tenantdb.connect(user, password);
-  const collections = await sequelize.query(
-    `SELECT customerRefNo, customerName, regIdNumber, amountDue,
-    accountNumber, creditLimit, currentBalance, debtorAge, totalBalance,
-    caseNotes, caseNumber, currentAssignment, currentStatus, nextVisitDateTime,
-    resolution, cases.updatedAt, cases.updatedBy
-    FROM customers, accounts, cases
-    WHERE customerRefNo = f_customerRefNo
-    AND accountNumber = f_accountNumber`,
-    { type: QueryTypes.SELECT }
-  );
-  return collections;
+// async function getAll(user, password) {
+async function getAll() {
+  // const sequelize = await tenantdb.connect(user, password);
+  try {
+    console.log(
+      "tenantConfig.devConfig: ",
+      tenantConfig.devConfig.user,
+      tenantConfig.devConfig.password
+    );
+    const sequelize = await tenantdb.connect(
+      tenantConfig.devConfig.user,
+      tenantConfig.devConfig.password
+    );
+    const collections = await sequelize.query(
+      `SELECT customerRefNo, customerName, regIdNumber, amountDue,
+      accountNumber, creditLimit, currentBalance, debtorAge, totalBalance,
+      caseNotes, caseNumber, currentAssignment, currentStatus, nextVisitDateTime,
+      resolution, tbl_cases.updatedAt, tbl_cases.updatedBy
+      FROM tbl_customers, tbl_accounts, tbl_cases
+      WHERE customerRefNo = f_customerRefNo
+      AND accountNumber = f_accountNumber`,
+      { type: QueryTypes.SELECT }
+    );
+    return collections;
+  } catch (error) {
+    console.log("Error connecting to tenant database: ", error);
+    throw error;
+  }
 }
 
 async function getCollection(id, user, password) {
@@ -94,20 +110,20 @@ async function dddgetCollection(id, user, password) {
 async function getAllStatus(recordStatus) {
   const collections = await db.Case.findAll({
     attributes: [
-      'caseNumber',
-      'caseNotes',
-      'currentAssignment',
-      'currentStatus',
-      'kamNotes',
-      'nextVisitDateTime',
-      'resolution',
-      'updatedAt',
-      'updatedBy',
+      "caseNumber",
+      "caseNotes",
+      "currentAssignment",
+      "currentStatus",
+      "kamNotes",
+      "nextVisitDateTime",
+      "resolution",
+      "updatedAt",
+      "updatedBy",
     ],
     include: [
       {
         model: db.Outcome,
-        attributes: ['outcomeNotes'],
+        attributes: ["outcomeNotes"],
       },
     ],
     where: { currentStatus: recordStatus },
@@ -295,7 +311,7 @@ function collectionsFields(collection) {
 }
 
 function collectionFields(collection) {
-  console.log('************** collection: ' + JSON.stringify(collection));
+  console.log("************** collection: " + JSON.stringify(collection));
   const [
     {
       caseNotes,

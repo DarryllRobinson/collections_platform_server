@@ -31,32 +31,32 @@ module.exports = db = {};
 // initialize the models
 initialize();
 
-async function newinitialize() {
-  const { host, port, user, password, database, socketPath } = config;
-  console.log("connect to db: ", database, user, password);
-  const sequelize = new Sequelize(database, user, password, {
-    dialect: "mysql",
-    dialectOptions: { decimalNumbers: true, socketPath },
-  });
-  //console.log('sequelize before: ', sequelize.config);
-  await sequelize.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
+// async function newinitialize() {
+//   const { host, port, user, password, database, socketPath } = config;
+//   console.log("connect to db: ", database, user, password);
+//   const sequelize = new Sequelize(database, user, password, {
+//     dialect: "mysql",
+//     dialectOptions: { decimalNumbers: true, socketPath },
+//   });
+//   //console.log('sequelize before: ', sequelize.config);
+//   await sequelize.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
 
-  // update sequelize instance with database
-  //sequelize.connectionManager.config.database = database;
-  //sequelize.config.database = database;
-  //console.log('sequelize after: ', sequelize.config);
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
+//   // update sequelize instance with database
+//   //sequelize.connectionManager.config.database = database;
+//   //sequelize.config.database = database;
+//   //console.log('sequelize after: ', sequelize.config);
+//   try {
+//     await sequelize.authenticate();
+//     console.log("Connection has been established successfully.");
+//   } catch (error) {
+//     console.error("Unable to connect to the database:", error);
+//   }
 
-  // sync all models with database
-  initModels(db, sequelize);
-  await sequelize.sync();
-  console.log("initialized");
-}
+//   // sync all models with database
+//   initModels(db, sequelize);
+//   await sequelize.sync();
+//   console.log("initialized");
+// }
 
 async function initialize() {
   // create db if it doesn't already exist
@@ -82,7 +82,7 @@ async function initialize() {
     console.log("Connected as id", connection.threadId);
   });
 
-  await connection.execute(
+  connection.execute(
     `CREATE DATABASE IF NOT EXISTS \`${database}\`;`,
     async function (err, results, fields) {
       //console.log('just tried to create database');
@@ -144,6 +144,7 @@ function initModels(db, sequelize) {
   db.Case = require("../cases/case.model")(sequelize);
   db.Contact = require("../contacts/contact.model")(sequelize);
   db.Customer = require("../customers/customer.model")(sequelize);
+
   db.Invoice = require("../invoices/invoice.model")(sequelize);
   db.Outcome = require("../outcomes/outcome.model")(sequelize);
   db.Mapping = require("../mappings/mapping.model")(sequelize);

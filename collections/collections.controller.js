@@ -1,20 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authorise = require('../middleware/authorise');
-const collectionService = require('./collection.service');
+const authorise = require("../middleware/authorise");
+const collectionService = require("./collection.service");
 
 // routes
-router.get('/', authorise(), getAll);
-router.get('/:id', authorise(), getCollection);
-router.put('/:id', authorise(), updateCollection);
+// router.get('/', authorise(), getAll);
+router.get("/", getAll);
+router.get("/:id", authorise(), getCollection);
+router.put("/:id", authorise(), updateCollection);
 
 module.exports = router;
 
 function getAll(req, res, next) {
   //console.log('collections getAll');
-  const { tenant, passwordHash } = req.user;
+  // const { tenant, passwordHash } = req.user;
   collectionService
-    .getAll(tenant, passwordHash)
+    // .getAll(tenant, passwordHash)
+    .getAll()
     .then((collections) => res.json(collections))
     .catch(next);
 }
