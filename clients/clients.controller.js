@@ -7,12 +7,13 @@ const Role = require("../helpers/role");
 const clientService = require("./client.service");
 
 // routes
-router.get("/", getAll);
+// router.get("/", authorise(), getAll);
+router.post("/", authorise(), getAll);
 
 module.exports = router;
 
 function getAll(req, res, next) {
-  console.log("getAll clients");
+  console.log("getAll clients", req.secret);
   clientService
     .getAll()
     .then((clients) => res.json(clients))

@@ -88,7 +88,7 @@ app.use(errorHandler);
 let port = 0;
 switch (process.env.REACT_APP_STAGE) {
   case "development":
-    port = 4000;
+    port = 4001;
     break;
   case "production":
     port = 8081;

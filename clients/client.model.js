@@ -5,6 +5,7 @@ module.exports = model;
 function model(sequelize) {
   const attributes = {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    passwordHash: { type: DataTypes.STRING, allowNull: false },
     clientName: { type: DataTypes.STRING, allowNull: false },
     tenant: { type: DataTypes.STRING, allowNull: false },
     createdBy: { type: DataTypes.STRING, allowNull: false },
@@ -12,18 +13,16 @@ function model(sequelize) {
     // f_clientId was in the sql table as an INT and not null
   };
 
-  /*const options = {
-    // disable default timestamp fields (createdAt and updatedAt)
-    timestamps: false,
+  const options = {
     defaultScope: {
       // exclude password hash by default
-      attributes: { exclude: ['passwordHash'] },
+      attributes: { exclude: ["passwordHash"] },
     },
     scopes: {
       // include hash with this scope
       withHash: { attributes: {} },
     },
-  };*/
+  };
 
   //return sequelize.define('account', attributes, options);
   return sequelize.define("client", attributes, {

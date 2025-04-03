@@ -1,23 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('../middleware/validate-request');
-const authorise = require('../middleware/authorise');
-const Role = require('../helpers/role');
-const customerService = require('./customer.service');
+const Joi = require("joi");
+const validateRequest = require("../middleware/validate-request");
+const authorise = require("../middleware/authorise");
+const Role = require("../helpers/role");
+const customerService = require("./customer.service");
 
 // routes
-router.get('/', authorise(), getAll);
-router.get('/invoices', authorise(), getCustomerInvoices);
-router.get('/:id', authorise(), getById);
-router.post('/bulk', authorise(), bulkCreate);
-router.post('/', authorise(), createSchema, create);
-router.put('/:id', authorise(), updateSchema, update);
-router.delete('/:id', authorise(), _delete);
+// router.get('/', authorise(), getAll);
+router.get("/", getAll);
+router.get("/invoices", authorise(), getCustomerInvoices);
+router.get("/:id", authorise(), getById);
+router.post("/bulk", authorise(), bulkCreate);
+router.post("/", authorise(), createSchema, create);
+router.put("/:id", authorise(), updateSchema, update);
+router.delete("/:id", authorise(), _delete);
 
 module.exports = router;
 
 function getAll(req, res, next) {
+  console.log("******************************* getAll", req.user);
   const { tenant, passwordHash } = req.user;
   customerService
     .getAll(tenant, passwordHash)
@@ -124,6 +126,6 @@ function _delete(req, res, next) {
   const { tenant, passwordHash } = req.user;
   customerService
     .delete(req.params.id, tenant, passwordHash)
-    .then(() => res.json({ message: 'Customer deleted successfully' }))
+    .then(() => res.json({ message: "Customer deleted successfully" }))
     .catch(next);
 }
