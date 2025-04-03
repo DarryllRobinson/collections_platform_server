@@ -7,7 +7,7 @@ module.exports = {
 async function getAll() {
   console.log("clientService.getAll");
   try {
-    const clients = await db.Clients.findAll();
+    const clients = await db.Client.findAll();
     return clients;
   } catch (err) {
     console.log("clientService.getAll error: ", err);
