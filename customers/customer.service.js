@@ -45,10 +45,8 @@ async function getSnapshot() {
       tenantConfig.devConfig.password
     );
     const snapshot = await sequelize.query(
-      `SELECT customerRefNo, customerName AS "Customer Name", amountDue,
-      accountNumber AS "Account Number", creditLimit AS "Credit Limit",
-      currentBalance AS "Current Balance", debtorAge AS "Debtor Age",
-      totalBalance AS "Total Balance"
+      `SELECT customerRefNo, customerName, amountDue,
+      accountNumber, creditLimit, currentBalance, debtorAge, totalBalance
       FROM tbl_customers, tbl_accounts
       WHERE customerRefNo = f_customerRefNo`,
       { type: QueryTypes.SELECT }
