@@ -6,7 +6,7 @@ const collectionService = require("./collection.service");
 // routes
 // router.get('/', authorise(), getAll);
 router.get("/", getAll);
-router.get("/:id", authorise(), getCollection);
+router.get("/:id", getCollection);
 router.put("/:id", authorise(), updateCollection);
 
 module.exports = router;
@@ -22,9 +22,11 @@ function getAll(req, res, next) {
 }
 
 function getCollection(req, res, next) {
-  const { tenant, passwordHash } = req.user;
+  console.log("************** getCollection: ", req.params.id);
+  // const { tenant, passwordHash } = req.user;
   collectionService
-    .getCollection(req.params.id, tenant, passwordHash)
+    // .getCollection(req.params.id, tenant, passwordHash)
+    .getCollection(req.params.id)
     .then((collection) => res.json(collection))
     .catch(next);
 }

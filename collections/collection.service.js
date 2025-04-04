@@ -30,11 +30,6 @@ async function connectNDB(user, password, dbs) {
 async function getAll() {
   // const sequelize = await tenantdb.connect(user, password);
   try {
-    console.log(
-      "tenantConfig.devConfig: ",
-      tenantConfig.devConfig.user,
-      tenantConfig.devConfig.password
-    );
     const sequelize = await tenantdb.connect(
       tenantConfig.devConfig.user,
       tenantConfig.devConfig.password
@@ -51,33 +46,42 @@ async function getAll() {
     );
     return collections;
   } catch (error) {
-    console.log("Error connecting to tenant database: ", error);
+    console.log("Error with getAll collections.service: ", error);
     throw error;
   }
 }
 
-async function getCollection(id, user, password) {
-  const sequelize = await tenantdb.connect(user, password);
-  const collection = await sequelize.query(
-    `SELECT caseNotes, caseNumber, currentAssignment, currentStatus, kamNotes,
-    nextVisitDateTime, resolution, cases.updatedBy,
+async function getCollection(id) {
+  console.log("************** getCollection: ", id);
+  try {
+    const sequelize = await tenantdb.connect(
+      tenantConfig.devConfig.user,
+      tenantConfig.devConfig.password
+    );
+    const collection = await sequelize.query(
+      `SELECT caseNotes, caseNumber, currentAssignment, currentStatus, kamNotes,
+    nextVisitDateTime, resolution, tbl_cases.updatedBy,
     amountDue, accountNotes, accountNumber, accountStatus, creditLimit, currentBalance,
     days30, days60, days90, days120, days150, days180, days180Over,
     debtorAge, debitOrderDate, lastPaymentAmount, lastPaymentAmount,
     lastPTPAmount, lastPTPDate, paymentDueDate, totalBalance
     representativeName, representativeNumber,
     customerEntity, customerName, regIdNumber, regIdStatus
-    FROM customers
-    LEFT JOIN accounts
+    FROM tbl_customers
+    LEFT JOIN tbl_accounts
     ON customerRefNo = f_customerRefNo
-    LEFT JOIN cases
+    LEFT JOIN tbl_cases
     ON accountNumber = f_accountNumber
-    LEFT JOIN contacts
-    ON contacts.f_accountNumber = accounts.accountNumber
-    AND cases.caseNumber = ${id}`,
-    { type: QueryTypes.SELECT }
-  );
-  return collectionFields(collection);
+    LEFT JOIN tbl_contacts
+    ON tbl_contacts.f_accountNumber = tbl_accounts.accountNumber
+    AND tbl_cases.caseNumber = ${id}`,
+      { type: QueryTypes.SELECT }
+    );
+    return collectionFields(collection);
+  } catch (error) {
+    console.log("Error with getCollection collections.service: ", error);
+    throw error;
+  }
 }
 
 async function dddgetCollection(id, user, password) {
