@@ -22,7 +22,6 @@ function getAll(req, res, next) {
 }
 
 function getCollection(req, res, next) {
-  console.log("************** getCollection: ", req.params.id);
   // const { tenant, passwordHash } = req.user;
   collectionService
     // .getCollection(req.params.id, tenant, passwordHash)

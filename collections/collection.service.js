@@ -52,7 +52,6 @@ async function getAll() {
 }
 
 async function getCollection(id) {
-  console.log("************** getCollection: ", id);
   try {
     const sequelize = await tenantdb.connect(
       tenantConfig.devConfig.user,
