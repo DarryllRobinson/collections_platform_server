@@ -1,33 +1,45 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('../middleware/validate-request');
-const authorise = require('../middleware/authorise');
-const accountService = require('./account.service');
+const Joi = require("joi");
+const validateRequest = require("../middleware/validate-request");
+const authorise = require("../middleware/authorise");
+const accountService = require("./account.service");
 
 // routes
-router.get('/', authorise(), getAll);
-router.get('/:id', authorise(), getById);
-router.post('/bulk', authorise(), bulkCreate);
-router.post('/', authorise(), createSchema, create);
-router.put('/:id', authorise(), updateSchema, update);
-router.delete('/:id', authorise(), _delete);
+// router.get('/', authorise(), getAll);
+// router.get('/:id', authorise(), getById);
+// router.post('/bulk', authorise(), bulkCreate);
+// router.post('/', authorise(), createSchema, create);
+// router.put('/:id', authorise(), updateSchema, update);
+// router.delete('/:id', authorise(), _delete);
+router.get("/", getAll);
+router.get("/:id", getById);
+router.get("/customer/:id", getAllByCustomerRefNo);
 
 module.exports = router;
 
 function getAll(req, res, next) {
-  const { tenant, passwordHash } = req.user;
+  // const { tenant, passwordHash } = req.user;
   accountService
-    .getAll(tenant, passwordHash)
+    .getAll()
     .then((accounts) => res.json(accounts))
     .catch(next);
 }
 
 function getById(req, res, next) {
-  const { tenant, passwordHash } = req.user;
+  // const { tenant, passwordHash } = req.user;
   accountService
-    .getById(req.params.id, tenant, passwordHash)
+    .getById(req.params.id)
     .then((account) => (account ? res.json(account) : res.sendStatus(404)))
+    .catch(next);
+}
+
+function getAllByCustomerRefNo(req, res, next) {
+  //console.log('******************************* getAllByCustomerRefNo');
+  // const { tenant, passwordHash } = req.user;
+  accountService
+    .getAllByCustomerRefNo(req.params.id)
+    .then((accounts) => (accounts ? res.json(accounts) : res.sendStatus(404)))
     .catch(next);
 }
 
@@ -129,6 +141,6 @@ function _delete(req, res, next) {
   const { tenant, passwordHash } = req.user;
   accountService
     .delete(req.params.id, tenant, passwordHash)
-    .then(() => res.json({ message: 'Account deleted successfully' }))
+    .then(() => res.json({ message: "Account deleted successfully" }))
     .catch(next);
 }

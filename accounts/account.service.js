@@ -1,15 +1,12 @@
-const config = require("../helpers/tenant.config.js");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-const { Op } = require("sequelize");
-const sendEmail = require("../helpers/send-email");
 const tenantdb = require("../helpers/tenant.db");
-const Role = require("../helpers/role");
+const tenantConfig = require("../helpers/tenant.config");
+const db = require("../helpers/db");
+const { QueryTypes } = require("sequelize");
 
 module.exports = {
   getAll,
   getById,
+  getAllByCustomerRefNo,
   bulkCreate,
   create,
   update,
@@ -22,14 +19,39 @@ async function connectDB(user, password, db) {
 }
 
 async function getAll(user, password) {
-  const db = await connectDB(user, password, "account");
-  const accounts = await db.findAll();
+  // const db = await connectDB(user, password, "account");
+  const accounts = await db.Account.findAll();
   return accounts.map((x) => basicDetails(x));
 }
 
-async function getById(id, user, password) {
-  const account = await getAccount(id, user, password);
+// async function getById(id, user, password) {
+//   const account = await getAccount(id, user, password);
+//   return basicDetails(account);
+// }
+
+async function getById(id) {
+  const account = await db.Account.findByPk(id);
+  if (!account) throw "Account not found";
   return basicDetails(account);
+}
+
+async function getAllByCustomerRefNo(customerRefNo) {
+  try {
+    const sequelize = await tenantdb.connect(
+      tenantConfig.devConfig.user,
+      tenantConfig.devConfig.password
+    );
+    const accounts = await sequelize.query(
+      `SELECT *
+      FROM tbl_accounts
+      WHERE f_customerRefNo = ${customerRefNo};`,
+      { type: QueryTypes.SELECT }
+    );
+    return accounts;
+  } catch (error) {
+    console.error("Error with accounts account.service: ", error);
+    throw error;
+  }
 }
 
 async function bulkCreate(params, user, password) {
