@@ -1,32 +1,53 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('../middleware/validate-request');
-const authorise = require('../middleware/authorise');
-const caseService = require('./case.service');
+const Joi = require("joi");
+const validateRequest = require("../middleware/validate-request");
+const authorise = require("../middleware/authorise");
+const caseService = require("./case.service");
 
 // routes
-router.get('/', authorise(), getAll);
-router.get('/:id', authorise(), getById);
-router.post('/bulk', authorise(), bulkCreate);
-router.post('/', authorise(), createSchema, create);
-router.put('/:id', authorise(), updateSchema, update);
-router.delete('/:id', authorise(), _delete);
+// router.get('/', authorise(), getAll);
+// router.get('/:id', authorise(), getById);
+// router.post('/bulk', authorise(), bulkCreate);
+// router.post('/', authorise(), createSchema, create);
+// router.put('/:id', authorise(), updateSchema, update);
+// router.delete('/:id', authorise(), _delete);
+router.get("/:id", getById);
+router.get("/account/:id", getAllByAccountNumber);
 
 module.exports = router;
 
-function getAll(req, res, next) {
-  const { tenant, passwordHash } = req.user;
+// function getAll(req, res, next) {
+//   const { tenant, passwordHash } = req.user;
+//   caseService
+//     .getAll(tenant, passwordHash)
+//     .then((cases) => res.json(cases))
+//     .catch(next);
+// }
+
+// function getById(req, res, next) {
+//   const { tenant, passwordHash } = req.user;
+//   caseService
+//     .getById(req.params.id, tenant, passwordHash)
+//     .then((caseObject) =>
+//       caseObject ? res.json(caseObject) : res.sendStatus(404)
+//     )
+//     .catch(next);
+// }
+
+function getById(req, res, next) {
   caseService
-    .getAll(tenant, passwordHash)
-    .then((cases) => res.json(cases))
+    .getById(req.params.id)
+    .then((caseObject) =>
+      caseObject ? res.json(caseObject) : res.sendStatus(404)
+    )
     .catch(next);
 }
 
-function getById(req, res, next) {
-  const { tenant, passwordHash } = req.user;
+function getAllByAccountNumber(req, res, next) {
+  // console.log("getAllByAccountNumber", { id });
   caseService
-    .getById(req.params.id, tenant, passwordHash)
+    .getAllByAccountNumber(req.params.id)
     .then((caseObject) =>
       caseObject ? res.json(caseObject) : res.sendStatus(404)
     )
@@ -110,6 +131,6 @@ function _delete(req, res, next) {
   const { tenant, passwordHash } = req.user;
   caseService
     .delete(req.params.id, tenant, passwordHash)
-    .then(() => res.json({ message: 'Case deleted successfully' }))
+    .then(() => res.json({ message: "Case deleted successfully" }))
     .catch(next);
 }
