@@ -7,10 +7,8 @@ const Role = require("../helpers/role");
 const customerService = require("./customer.service");
 
 // routes
-// router.get('/', authorise(), getAll);
-router.get("/", getAll);
-// router.get("/snapshot", authorise(), getAll);
-router.get("/snapshot", getSnapshot);
+router.get("/", authorise(), getAll);
+router.get("/snapshot", authorise(), getSnapshot);
 router.get("/invoices", authorise(), getCustomerInvoices);
 router.get("/:id", authorise(), getById);
 router.post("/bulk", authorise(), bulkCreate);

@@ -7,13 +7,12 @@ const caseService = require("./case.service");
 
 // routes
 // router.get('/', authorise(), getAll);
-// router.get('/:id', authorise(), getById);
-// router.post('/bulk', authorise(), bulkCreate);
-// router.post('/', authorise(), createSchema, create);
-// router.put('/:id', authorise(), updateSchema, update);
-// router.delete('/:id', authorise(), _delete);
-router.get("/:id", getById);
-router.get("/account/:id", getAllByAccountNumber);
+router.get("/:id", authorise(), getById);
+router.post("/bulk", authorise(), bulkCreate);
+router.post("/", authorise(), createSchema, create);
+router.put("/:id", authorise(), updateSchema, update);
+router.delete("/:id", authorise(), _delete);
+router.get("/account/:id", authorise(), getAllByAccountNumber);
 
 module.exports = router;
 

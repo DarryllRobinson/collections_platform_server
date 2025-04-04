@@ -7,9 +7,8 @@ const Role = require("../helpers/role");
 const clientService = require("./client.service");
 
 // routes
-// router.get("/", authorise(), getAll);
+router.get("/", authorise(), getAll);
 // router.post("/", authorise(), getAll);
-router.get("/", getAll);
 
 module.exports = router;
 

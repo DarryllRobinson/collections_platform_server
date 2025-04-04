@@ -5,11 +5,14 @@ const db = require("../helpers/db.js");
 module.exports = authorise;
 
 function authorise(roles = []) {
+  console.log("authorise roles", roles);
   // roles param can be a single role string (e.g. Role.User or 'User')
   // or an array of roles (e.g. [Role.Admin, Role.User] or ['Admin', 'User'])
   if (typeof roles === "string") {
     roles = [roles];
   }
+
+  console.log("jwt:", jwt({ secret, algorithms: ["HS256"] }));
 
   return [
     // authenticate JWT token and attach user to request object (req.user)
@@ -17,9 +20,10 @@ function authorise(roles = []) {
 
     // authorise based on user role
     async (req, res, next) => {
+      console.log("authorise", req.auth);
       try {
         const user = await db.User.findByPk(req.auth.id);
-        // console.log("!!!!!!!! authorise user", JSON.stringify(user));
+        console.log("!!!!!!!! authorise user", JSON.stringify(user));
 
         if (
           !user ||

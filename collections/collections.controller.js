@@ -4,9 +4,8 @@ const authorise = require("../middleware/authorise");
 const collectionService = require("./collection.service");
 
 // routes
-// router.get('/', authorise(), getAll);
-router.get("/", getAll);
-router.get("/:id", getCollection);
+router.get("/", authorise(), getAll);
+router.get("/:id", authorise(), getCollection);
 router.put("/:id", authorise(), updateCollection);
 
 module.exports = router;
