@@ -1,8 +1,11 @@
-const tenantdb = require('../helpers/tenant.db');
-const { QueryTypes } = require('sequelize');
+const tenantdb = require("../helpers/tenant.db");
+const tenantConfig = require("../helpers/tenant.config");
+const db = require("../helpers/db");
+const { QueryTypes } = require("sequelize");
 
 module.exports = {
   getAll,
+  getSnapshot,
   getById,
   getCustomerInvoices,
   bulkCreate,
@@ -11,18 +14,49 @@ module.exports = {
   delete: _delete,
 };
 
-async function connectDB(user, password, db) {
-  const sequelize = await tenantdb.connect(user, password);
-  return require(`../${db}s/${db}.model`)(sequelize);
-}
+// async function connectDB(user, password, db) {
+//   const sequelize = await tenantdb.connect(user, password);
+//   return require(`../${db}s/${db}.model`)(sequelize);
+// }
 
-async function getAll(user, password) {
+// async function getAll(user, password) {
+//   try {
+//     const db = await connectDB(user, password, 'customer');
+//     const customers = await db.findAll();
+//     return customers.map((x) => basicDetails(x));
+//   } catch (err) {
+//     console.log('customerService.getAll error: ', err);
+//   }
+// }
+
+async function getAll() {
   try {
-    const db = await connectDB(user, password, 'customer');
-    const customers = await db.findAll();
+    const customers = await db.Customer.findAll();
     return customers.map((x) => basicDetails(x));
   } catch (err) {
-    console.log('customerService.getAll error: ', err);
+    console.log("customerService.getAll error: ", err);
+  }
+}
+
+async function getSnapshot() {
+  try {
+    const sequelize = await tenantdb.connect(
+      tenantConfig.devConfig.user,
+      tenantConfig.devConfig.password
+    );
+    const snapshot = await sequelize.query(
+      `SELECT customerRefNo, customerName AS "Customer Name", amountDue,
+      accountNumber AS "Account Number", creditLimit AS "Credit Limit",
+      currentBalance AS "Current Balance", debtorAge AS "Debtor Age",
+      totalBalance AS "Total Balance"
+      FROM tbl_customers, tbl_accounts
+      WHERE customerRefNo = f_customerRefNo`,
+      { type: QueryTypes.SELECT }
+    );
+    return snapshot;
+  } catch (error) {
+    console.error("Error with getSnapshot customer.service: ", error);
+    throw error;
   }
 }
 
@@ -73,18 +107,18 @@ function customerInvoicesDetails(invoice) {
 
 async function bulkCreate(params, user, password) {
   // Count existing rows to be able to count number of affected rows
-  const db = await connectDB(user, password, 'customer');
+  const db = await connectDB(user, password, "customer");
   //console.log('**************** bulkCreate', params);
-  const existingRows = await db.count({ distinct: 'customerRefNo' });
+  const existingRows = await db.count({ distinct: "customerRefNo" });
   //console.log('**************** bulkCreate', existingRows);
   await db.bulkCreate(params);
-  const totalRows = await db.count({ distinct: 'customerRefNo' });
+  const totalRows = await db.count({ distinct: "customerRefNo" });
 
   return totalRows - existingRows;
 }
 
 async function create(params, user, password) {
-  const db = await connectDB(user, password, 'customer');
+  const db = await connectDB(user, password, "customer");
   // validate
   if (await db.findOne({ where: { customerName: params.customerName } })) {
     throw 'Customer "' + params.customerName + '" is already registered';
@@ -99,7 +133,7 @@ async function create(params, user, password) {
 }
 
 async function update(id, params, user, password) {
-  const db = await connectDB(user, password, 'customer');
+  const db = await connectDB(user, password, "customer");
   const customer = await getCustomer(id, user, password);
 
   // validate (if email was changed)
@@ -129,10 +163,10 @@ async function _delete(id, user, password) {
 // helper functions
 
 async function getCustomer(id, user, password) {
-  console.log('here I am');
-  const db = await connectDB(user, password, 'customer');
+  console.log("here I am");
+  const db = await connectDB(user, password, "customer");
   const customer = await db.findByPk(id);
-  if (!customer) throw 'Customer not found';
+  if (!customer) throw "Customer not found";
   return customer;
 }
 

@@ -46,7 +46,7 @@ async function getAll() {
     );
     return collections;
   } catch (error) {
-    console.log("Error with getAll collections.service: ", error);
+    console.error("Error with getAll collections.service: ", error);
     throw error;
   }
 }

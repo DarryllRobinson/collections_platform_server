@@ -9,6 +9,8 @@ const customerService = require("./customer.service");
 // routes
 // router.get('/', authorise(), getAll);
 router.get("/", getAll);
+// router.get("/snapshot", authorise(), getAll);
+router.get("/snapshot", getSnapshot);
 router.get("/invoices", authorise(), getCustomerInvoices);
 router.get("/:id", authorise(), getById);
 router.post("/bulk", authorise(), bulkCreate);
@@ -19,10 +21,19 @@ router.delete("/:id", authorise(), _delete);
 module.exports = router;
 
 function getAll(req, res, next) {
-  console.log("******************************* getAll", req.user);
-  const { tenant, passwordHash } = req.user;
+  // const { tenant, passwordHash } = req.user;
   customerService
-    .getAll(tenant, passwordHash)
+    // .getAll(tenant, passwordHash)
+    .getAll()
+    .then((customers) => res.json(customers))
+    .catch(next);
+}
+
+function getSnapshot(req, res, next) {
+  // const { tenant, passwordHash } = req.user;
+  customerService
+    // .getSnapshot(tenant, passwordHash)
+    .getSnapshot()
     .then((customers) => res.json(customers))
     .catch(next);
 }
