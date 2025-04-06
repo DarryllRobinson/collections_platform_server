@@ -45,6 +45,7 @@ function authorise(roles = []) {
         req.auth.passwordHash = passwordHash;
 
         req.auth.role = user.role;
+        console.log("req.auth", req.auth);
         const refreshTokens = await user.getRefreshTokens();
         req.auth.ownsToken = (token) =>
           !!refreshTokens.find((x) => x.token === token);
